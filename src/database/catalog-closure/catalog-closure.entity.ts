@@ -1,13 +1,24 @@
 import { Catalog } from '../catalog/catalog.entiy';
-import { Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'catalog_closure' })
 export class CatalogClosure {
-    @OneToOne(() => Catalog, { primary: true })
+    constructor(init?: Partial<CatalogClosure>) {
+        if (init) {
+            Object.assign(this, init);
+        }
+    }
+
+    @ManyToOne(() => Catalog, { primary: true })
     @JoinColumn({ name: 'parent_id' })
+    @Index()
     parent: Catalog;
 
-    @OneToOne(() => Catalog, { primary: true })
+    @ManyToOne(() => Catalog, { primary: true })
     @JoinColumn({ name: 'child_id' })
+    @Index()
     child: Catalog;
+
+    @Column({ name: 'level', type: 'int' })
+    level: number;
 }
